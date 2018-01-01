@@ -42,8 +42,8 @@ def tweetday(today,schedule_days):
 # main
 
 # set directories, change to current working directory where all config/database/log files reside
-
-os.chdir(os.path.dirname(__file__))
+print os.path.abspath(__file__)
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # enable logging
 
@@ -95,7 +95,7 @@ try:
     con = sqlite3.connect(tweetdb)
 except sqlite3.DatabaseError:
     logging.critical('Cannot load database')
-        
+
 current = con.cursor()
 
 # check if any unposted notes
@@ -136,7 +136,7 @@ if link:
     tweet = note + " " + link
 else:
     tweet = note
-    
+
 # post tweet
 
 try:
@@ -154,7 +154,7 @@ current.execute("INSERT into HISTORY(note_id,topic,timestamp) VALUES(?,?,?)",(no
 con.commit()
 
 # log number of remaining unposted notes
- 
+
 current.execute("SELECT topic from NOTES where count=0")
 records = current.fetchall()
 logging.info('Note(s) left: %s', len(records))
